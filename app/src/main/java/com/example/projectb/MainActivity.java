@@ -1,6 +1,7 @@
 package com.example.projectb;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -12,21 +13,23 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.net.URL;
 import java.util.Scanner;
 
 
 public class MainActivity extends AppCompatActivity {
 
+    public void connect() throws IOException {
+        System.out.println("geia1");
+        Socket connection = new Socket("10.0.2.2", 9600);
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        try {
-            Socket connection = new Socket("10.0.2.2", 9600);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        MainActivityAsync myAsyncTasks = new MainActivityAsync();
+        myAsyncTasks.execute();
 /*
         Consumer consumer = new Consumer();
         File file = new File("Song Downloads");
@@ -58,6 +61,18 @@ public class MainActivity extends AppCompatActivity {
 
 */
     }
+    public class MainActivityAsync extends AsyncTask<String, String, String> {
+        String current = "";
+        @Override
+        protected String doInBackground(String... strings) {
+            try {
+                connect();
+                System.out.println("geia2");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }      return current;
+        }
 
-
+    }
 }
+
