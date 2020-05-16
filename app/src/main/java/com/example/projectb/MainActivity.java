@@ -17,16 +17,17 @@ import java.util.Scanner;
 
 public class MainActivity extends AppCompatActivity {
 
-    String artistChoice;
-    public Socket connection;
-    String session;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-
+        try {
+            Socket connection = new Socket("10.0.2.2", 9600);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+/*
         Consumer consumer = new Consumer();
         File file = new File("Song Downloads");
         file.mkdir();
@@ -34,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
         //Connect - Ask for type of session
         try {
 
-            connection = new Socket("10.0.2.2", 9600);
+
             System.out.println("geia");
             System.out.println("Connected.");
             ObjectInputStream input = new ObjectInputStream(connection.getInputStream());
@@ -55,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
+*/
     }
 
 
