@@ -13,12 +13,8 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.net.URL;
-import java.util.Scanner;
-
 
 public class MainActivity extends AppCompatActivity {
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
