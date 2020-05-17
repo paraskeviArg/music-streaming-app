@@ -16,14 +16,15 @@ import java.net.Socket;
 
 public class MainActivity extends AppCompatActivity {
 
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         File file = new File("Song Downloads");
         file.mkdir();
-        Button btn_online = (Button) findViewById(R.id.btn_online);
-        Button btn_offline = (Button) findViewById(R.id.btn_offline);
+        Button btn_online = findViewById(R.id.btn_online);
+        Button btn_offline = findViewById(R.id.btn_offline);
         btn_online.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -43,6 +44,18 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    private static ObjectInputStream input = null;
+    private static ObjectOutputStream output = null;
+
+    public ObjectInputStream getInput() {
+        return input;
+    }
+
+    public ObjectOutputStream getOutput() {
+        return output;
+    }
+
+
     public class MainActivityAsyncOnline extends AsyncTask<String, String, String> {
         String current = "";
 
@@ -52,8 +65,8 @@ public class MainActivity extends AppCompatActivity {
                 Consumer consumer = new Consumer();
                 Socket connection = new Socket("10.0.2.2", 9600);
                 System.out.println("Connected.");
-                ObjectInputStream input = new ObjectInputStream(connection.getInputStream());
-                ObjectOutputStream output = new ObjectOutputStream(connection.getOutputStream());
+                input = new ObjectInputStream(connection.getInputStream());
+                output = new ObjectOutputStream(connection.getOutputStream());
                 String sessionQ = (String) input.readObject();
                 System.out.println(sessionQ);
                 output.writeObject("online");
