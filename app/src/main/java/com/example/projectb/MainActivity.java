@@ -56,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    public class MainActivityAsyncOnline extends AsyncTask<String, String, String> {
+    public static class MainActivityAsyncOnline extends AsyncTask<String, String, String> {
         String current = "";
 
         @Override
@@ -79,7 +79,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public class MainActivityAsyncOffline extends AsyncTask<String, String, String> {
+    public static class MainActivityAsyncOffline extends AsyncTask<String, String, String> {
         String current = "";
 
         @Override
