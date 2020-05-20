@@ -12,10 +12,18 @@
     tools:context=".SearchArtistActivity">
 
 
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbarSong"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/colorPrimary"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="?attr/actionBarTheme" />
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-
+        android:layout_below="@+id/toolbarSong"
         android:layout_marginTop="-2dp">
 
         <ListView

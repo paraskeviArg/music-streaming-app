@@ -1,15 +1,12 @@
 package com.example.projectb;
 
 import androidx.annotation.RequiresApi;
-
+import androidx.appcompat.widget.Toolbar;
 import android.app.Activity;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.TextView;
-import android.widget.Toolbar;
-
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -29,12 +26,9 @@ public class ChooseSongActivity extends Activity {
         setContentView(R.layout.activity_choose_song);
 
 
-        Toolbar toolbar = new Toolbar(this);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbarSong);
+        toolbar.setTitle("kalo");
 
-        toolbar.setPopupTheme(R.style.AppTheme);
-        toolbar.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
-        toolbar.setTitle("This is the title");
-        toolbar.setVisibility(View.VISIBLE);
     }
 
     public static class ViewArtistSongsAsync extends AsyncTask<String, String, String> {
