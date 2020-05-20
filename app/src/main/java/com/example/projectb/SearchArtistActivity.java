@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ProgressDialog;
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
@@ -16,6 +17,7 @@ import android.widget.Toast;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 
 
@@ -36,7 +38,12 @@ public class SearchArtistActivity extends Activity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
-                Toast.makeText(SearchArtistActivity.this, "You Clicked at " + artists[+position], Toast.LENGTH_SHORT).show();
+                Toast.makeText(SearchArtistActivity.this, "You chose artist: " + artists[+position], Toast.LENGTH_SHORT).show();
+                artist = artists[+position];
+
+                ChooseArtistAsyncTask chooseArtistAsyncTask = new ChooseArtistAsyncTask();
+                chooseArtistAsyncTask.execute();
+                startActivity(new Intent(SearchArtistActivity.this, ChooseSongActivity.class));
             }
         });
     }
@@ -49,8 +56,7 @@ public class SearchArtistActivity extends Activity {
         SearchActivityAsync searchActivityAsync = new SearchActivityAsync();
         searchActivityAsync.execute();
         Button button = null;
-        constraint = findViewById(R.id.constaint);
-
+        constraint = findViewById(R.id.relativeArtist);
 
     }
 
@@ -80,13 +86,13 @@ public class SearchArtistActivity extends Activity {
 
  */
 
-
         @Override
         public ArrayList<String> doInBackground(String... strings) {
 
             try {
                 ObjectInputStream input = ma.getInput();
                 String artistQ = (String) input.readObject();
+                System.out.println(artistQ);
                 allArtists = (ArrayList<String>) input.readObject();
                 System.out.println(allArtists);
             } catch (ClassNotFoundException e) {
@@ -109,9 +115,22 @@ public class SearchArtistActivity extends Activity {
                 i++;
             }
             createList(artistsArray);
-
         }
 
+    }
+
+    public static class ChooseArtistAsyncTask extends AsyncTask<String, String, Void> {
+
+        @Override
+        protected Void doInBackground(String... strings) {
+            ObjectOutputStream output = ma.getOutput();
+            try {
+                output.writeObject(artist);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
     }
 }
 

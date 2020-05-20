@@ -1,34 +1,40 @@
 package com.example.projectb;
 
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.annotation.RequiresApi;
 
+import android.app.Activity;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.TextView;
+import android.widget.Toolbar;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 
-public class ChooseSongActivity extends AppCompatActivity {
+public class ChooseSongActivity extends Activity {
     TextView artistPick;
     TextView viewSongs;
     private static MainActivity ma = new MainActivity();
     private static SearchArtistActivity saa = new SearchArtistActivity();
 
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_choose_song);
 
-        viewSongs = findViewById(R.id.viewingSongsBy);
-        artistPick = findViewById(R.id.artistPick);
-        String songsByArtist = getIntent().getStringExtra("chosen_artist");
-        artistPick.setText(saa.getArtist());
-        ViewArtistSongsAsync viewArtistSongsAsync = new ViewArtistSongsAsync();
-        viewArtistSongsAsync.execute();
+
+        Toolbar toolbar = new Toolbar(this);
+
+        toolbar.setPopupTheme(R.style.AppTheme);
+        toolbar.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+        toolbar.setTitle("This is the title");
+        toolbar.setVisibility(View.VISIBLE);
     }
 
     public static class ViewArtistSongsAsync extends AsyncTask<String, String, String> {

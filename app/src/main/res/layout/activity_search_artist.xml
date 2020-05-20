@@ -5,18 +5,35 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/constaint"
+    android:id="@+id/relativeArtist"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/holo_blue_bright"
     tools:context=".SearchArtistActivity">
 
 
-    <ListView
-        android:id="@+id/list"
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar3"
         android:layout_width="match_parent"
-        android:layout_height="660dp"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="-29dp"></ListView>
+        android:layout_height="wrap_content"
+        android:background="?attr/colorPrimary"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="?attr/actionBarTheme"
+        app:title="All artists:" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/toolbar3"
+        android:layout_marginTop="-2dp">
+
+        <ListView
+            android:id="@+id/list"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
+        </ListView>
+
+    </RelativeLayout>
+
 
 </RelativeLayout>
