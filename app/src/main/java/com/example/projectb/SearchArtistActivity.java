@@ -27,6 +27,7 @@ public class SearchArtistActivity extends Activity {
         button.setTag(artistName);
         button.setText(artist);
         System.out.println("koumpi");
+        button.setText(artistName);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
