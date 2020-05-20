@@ -13,6 +13,7 @@ import android.widget.RelativeLayout;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 
 
 public class SearchArtistActivity extends Activity {
@@ -22,8 +23,8 @@ public class SearchArtistActivity extends Activity {
     LinearLayout linear = null;
     public void createArtistButtons (String artistName){
         Button button = new Button(this);
-        button.setWidth(100);
-        button.setHeight(50);
+        button.setWidth(500);
+        button.setHeight(200);
         button.setTag(artistName);
         button.setText(artist);
         System.out.println("koumpi");
@@ -71,7 +72,7 @@ public class SearchArtistActivity extends Activity {
         ObjectInputStream input = ma.getInput();
         String artistQ;
 
-        /*
+
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -80,9 +81,10 @@ public class SearchArtistActivity extends Activity {
             p.setIndeterminate(false);
             p.setCancelable(false);
             p.show();
+
         }
 
-         */
+
 
         @Override
         public ArrayList<String> doInBackground(String... strings) {
