@@ -3,44 +3,44 @@ package com.example.projectb;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ProgressDialog;
-import android.content.Intent;
+
 import android.os.AsyncTask;
 import android.os.Bundle;
+
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
+
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.util.ArrayList;
-import java.util.concurrent.TimeUnit;
 
 
 public class SearchArtistActivity extends Activity {
+
+    ListView list;
     private static ArrayList<String> allArtists;
     private static String artist;
     private static MainActivity ma = new MainActivity();
-    LinearLayout linear = null;
-    public void createArtistButtons (String artistName){
-        Button button = new Button(this);
-        button.setWidth(500);
-        button.setHeight(200);
-        button.setTag(artistName);
-        button.setText(artist);
-        System.out.println("koumpi");
-        button.setText(artistName);
-        button.setOnClickListener(new View.OnClickListener() {
+    RelativeLayout constraint = null;
+
+
+    public void createList(final String[] artists) {
+        CustomList listAdapter = new CustomList(SearchArtistActivity.this, artists);
+        list = findViewById(R.id.list);
+        list.setAdapter(listAdapter);
+        list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onClick(View v) {
-                MainActivity.MainActivityAsyncOnline myAsyncTasks = new MainActivity.MainActivityAsyncOnline();
-                myAsyncTasks.execute();
-                startActivity(new Intent(SearchArtistActivity.this, ChooseSongActivity.class));
+            public void onItemClick(AdapterView<?> parent, View view,
+                                    int position, long id) {
+                Toast.makeText(SearchArtistActivity.this, "You Clicked at " + artists[+position], Toast.LENGTH_SHORT).show();
             }
         });
-
-
-        linear.addView(button);
     }
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -49,9 +49,7 @@ public class SearchArtistActivity extends Activity {
         SearchActivityAsync searchActivityAsync = new SearchActivityAsync();
         searchActivityAsync.execute();
         Button button = null;
-        linear  = (LinearLayout) findViewById(R.id.linear);
-
-
+        constraint = findViewById(R.id.constaint);
 
 
     }
@@ -68,11 +66,7 @@ public class SearchArtistActivity extends Activity {
     public class SearchActivityAsync extends AsyncTask<String, String, ArrayList<String>> {
         String current = "";
         ProgressDialog p;
-
-        ObjectInputStream input = ma.getInput();
-        String artistQ;
-
-
+/*
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -84,13 +78,15 @@ public class SearchArtistActivity extends Activity {
 
         }
 
+ */
 
 
         @Override
         public ArrayList<String> doInBackground(String... strings) {
 
             try {
-                artistQ = (String) input.readObject();
+                ObjectInputStream input = ma.getInput();
+                String artistQ = (String) input.readObject();
                 allArtists = (ArrayList<String>) input.readObject();
                 System.out.println(allArtists);
             } catch (ClassNotFoundException e) {
@@ -106,16 +102,16 @@ public class SearchArtistActivity extends Activity {
         protected void onPostExecute(ArrayList<String> allArtists) {
             super.onPostExecute(allArtists);
             System.out.println(allArtists);
-
-            ArrayList<Button> buttons = new ArrayList<>();
-
-            for (String artist : allArtists){
-                createArtistButtons(artist);
+            String[] artistsArray = new String[allArtists.size()];
+            int i = 0;
+            for(String artist: allArtists) {
+                artistsArray[i] = artist;
+                i++;
             }
+            createList(artistsArray);
 
         }
 
     }
-
 }
 
