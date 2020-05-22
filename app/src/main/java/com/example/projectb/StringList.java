@@ -1,5 +1,6 @@
 package com.example.projectb;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,7 +24,7 @@ public class StringList extends ArrayAdapter<String> {
     @Override
     public View getView(int position, View view, ViewGroup parent) {
         LayoutInflater inflater = context.getLayoutInflater();
-        View rowView = inflater.inflate(R.layout.artist_row, null, true);
+        @SuppressLint("ViewHolder") View rowView = inflater.inflate(R.layout.artist_row, null, true);
         TextView txtTitle = rowView.findViewById(R.id.txt);
         txtTitle.setText(array[position]);
         txtTitle.setTextSize(20);

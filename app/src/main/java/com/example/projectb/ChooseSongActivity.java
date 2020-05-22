@@ -6,6 +6,7 @@ import androidx.appcompat.widget.Toolbar;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -13,11 +14,9 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.IOException;
-import java.io.ObjectInput;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
@@ -46,7 +45,8 @@ public class ChooseSongActivity extends Activity {
 
                 SearchArtistActivity.ChooseArtistAsyncTask chooseArtistAsyncTask = new SearchArtistActivity.ChooseArtistAsyncTask();
                 chooseArtistAsyncTask.execute();
-                //startActivity(new Intent(ChooseSongActivity.this, ChooseSongActivity.class));
+
+                startActivity(new Intent(ChooseSongActivity.this, ListenSongActivity.class));
             }
         });
     }
@@ -58,14 +58,14 @@ public class ChooseSongActivity extends Activity {
         setContentView(R.layout.activity_choose_song);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbarSong);
         String title = saa.getArtist();
-        toolbar.setTitle("Showing all songs by: "+title);
+        toolbar.setTitle("Showing all songs by: " + title);
         ViewArtistSongsAsyncTask viewArtistSongsAsyncTask = new ViewArtistSongsAsyncTask();
         viewArtistSongsAsyncTask.execute();
 
     }
 
     @SuppressLint("StaticFieldLeak")
-    public class ViewArtistSongsAsyncTask extends AsyncTask<String, String,  ArrayList<Song>> {
+    public class ViewArtistSongsAsyncTask extends AsyncTask<String, String, ArrayList<Song>> {
 
 
         @Override
@@ -78,10 +78,12 @@ public class ChooseSongActivity extends Activity {
                 if (newPort.equals("")) {
                     System.out.println("This artist does not exist in our database. Please search for an other artist.");
                 } else {
-                    Socket connection = new Socket("10.0.2.2", Integer.parseInt(newPort));
+                    if (!newPort.equals("noRedirect")) {
+                        Socket connection = new Socket("10.0.2.2", Integer.parseInt(newPort));
+                    }
                 }
                 ArrayList<Song> artistSongs;
-                allSongs =(ArrayList<Song>) input.readObject();
+                allSongs = (ArrayList<Song>) input.readObject();
                 System.out.println(allSongs);
                 System.out.println(input.readObject());
 
@@ -100,7 +102,7 @@ public class ChooseSongActivity extends Activity {
             System.out.println(allSongs);
             Song[] songsArray = new Song[allSongs.size()];
             int i = 0;
-            for(Song song: allSongs) {
+            for (Song song : allSongs) {
                 songsArray[i] = song;
                 i++;
             }

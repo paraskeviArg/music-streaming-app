@@ -1,5 +1,6 @@
 package com.example.projectb;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,10 +21,11 @@ public class SongList extends ArrayAdapter<Song> {
 
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public View getView(int position, View view, ViewGroup parent) {
         LayoutInflater inflater = context.getLayoutInflater();
-        View rowView = inflater.inflate(R.layout.song_row, null, true);
+        @SuppressLint("ViewHolder") View rowView = inflater.inflate(R.layout.song_row, null, true);
         TextView txtTrack = rowView.findViewById(R.id.trackName);
         TextView textArtist = rowView.findViewById(R.id.artistName);
         TextView textAlbum = rowView.findViewById(R.id.albumName);
