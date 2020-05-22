@@ -3,14 +3,21 @@ package com.example.projectb;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.widget.Toolbar;
 import android.app.Activity;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import java.io.IOException;
+import java.io.ObjectInput;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.util.ArrayList;
 
 public class ChooseSongActivity extends Activity {
     TextView artistPick;
@@ -24,14 +31,15 @@ public class ChooseSongActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_choose_song);
-
-
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbarSong);
-        toolbar.setTitle("kalo");
+        String title = saa.getArtist();
+        toolbar.setTitle("Showing all songs by: "+title);
+        ViewArtistSongsAsyncTask viewArtistSongsAsyncTask = new ViewArtistSongsAsyncTask();
+        viewArtistSongsAsyncTask.execute();
 
     }
 
-    public static class ViewArtistSongsAsync extends AsyncTask<String, String, String> {
+    public static class ViewArtistSongsAsyncTask extends AsyncTask<String, String, String> {
         String current = "";
 
 
@@ -47,8 +55,13 @@ public class ChooseSongActivity extends Activity {
                 } else {
                     Socket connection = new Socket("10.0.2.2", Integer.parseInt(newPort));
                 }
+                ArrayList<Song> artistSongs = new ArrayList<>();
+                artistSongs =(ArrayList<Song>) input.readObject();
+                System.out.println(artistSongs);
                 System.out.println(input.readObject());
-                System.out.println(input.readObject());
+
+
+
 
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
