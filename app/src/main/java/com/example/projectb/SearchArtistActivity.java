@@ -31,7 +31,7 @@ public class SearchArtistActivity extends Activity {
 
 
     public void createList(final String[] artists) {
-        CustomList listAdapter = new CustomList(SearchArtistActivity.this, artists);
+        StringList listAdapter = new StringList(SearchArtistActivity.this, artists);
         list = findViewById(R.id.list);
         list.setAdapter(listAdapter);
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -109,11 +109,11 @@ public class SearchArtistActivity extends Activity {
             super.onPostExecute(allArtists);
             System.out.println(allArtists);
             String[] artistsArray = new String[allArtists.size()];
-            int i = 0;
-            for(String artist: allArtists) {
-                artistsArray[i] = artist;
-                i++;
-            }
+                int i = 0;
+                for(String artist: allArtists) {
+                    artistsArray[i] = artist;
+                    i++;
+                }
             createList(artistsArray);
         }
 

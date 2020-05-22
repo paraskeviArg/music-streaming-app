@@ -5,15 +5,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
 
-public class CustomList extends ArrayAdapter<String> {
+public class StringList extends ArrayAdapter<String> {
     private final Activity context;
     private final String[] array;
 
 
-    CustomList(Activity context,
+    StringList(Activity context,
                String[] array) {
         super(context, R.layout.dd, array);
         this.context = context;
@@ -25,9 +24,9 @@ public class CustomList extends ArrayAdapter<String> {
     public View getView(int position, View view, ViewGroup parent) {
         LayoutInflater inflater = context.getLayoutInflater();
         View rowView = inflater.inflate(R.layout.dd, null, true);
-        TextView txtTitle = (TextView) rowView.findViewById(R.id.txt);
-        ImageView imageView = (ImageView) rowView.findViewById(R.id.img);
+        TextView txtTitle = rowView.findViewById(R.id.txt);
         txtTitle.setText(array[position]);
+        txtTitle.setTextSize(20);
         return rowView;
     }
 }
