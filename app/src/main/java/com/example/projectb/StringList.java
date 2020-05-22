@@ -14,7 +14,7 @@ public class StringList extends ArrayAdapter<String> {
 
     StringList(Activity context,
                String[] array) {
-        super(context, R.layout.dd, array);
+        super(context, R.layout.artist_row, array);
         this.context = context;
         this.array = array;
 
@@ -23,7 +23,7 @@ public class StringList extends ArrayAdapter<String> {
     @Override
     public View getView(int position, View view, ViewGroup parent) {
         LayoutInflater inflater = context.getLayoutInflater();
-        View rowView = inflater.inflate(R.layout.dd, null, true);
+        View rowView = inflater.inflate(R.layout.artist_row, null, true);
         TextView txtTitle = rowView.findViewById(R.id.txt);
         txtTitle.setText(array[position]);
         txtTitle.setTextSize(20);

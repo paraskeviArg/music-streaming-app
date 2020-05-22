@@ -14,7 +14,7 @@ public class SongList extends ArrayAdapter<Song> {
 
     SongList(Activity context,
                Song[] array) {
-        super(context, R.layout.dd, array);
+        super(context, R.layout.artist_row, array);
         this.context = context;
         this.array = array;
 
