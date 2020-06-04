@@ -20,8 +20,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.concurrent.TimeUnit;
-
 
 public class ListenSongActivity extends AppCompatActivity {
 
@@ -33,42 +31,37 @@ public class ListenSongActivity extends AppCompatActivity {
     public void play() throws Exception {
 
         final MediaPlayer mPlayer = new MediaPlayer();
-        final ArrayList<File> pla = pl;
-        Iterator<File> iter = pla.iterator();
 
-        FileInputStream fis = new FileInputStream(iter.next());
+        FileInputStream fis = new FileInputStream(pl.get(0));
         mPlayer.setDataSource(fis.getFD());
-        System.out.println(iter.hasNext());
         mPlayer.prepareAsync();
-
 
         mPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
             @Override
             public void onPrepared(MediaPlayer mp) {
-                System.out.println(pl.size());
-                System.out.println("d");
-                mPlayer.start();
+                mp.start();
+                pl.remove(pl.get((0)));
+                System.out.println("AAAAAAAAAAAAAAAA" + pl.size());
             }
         });
 
         mPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             @Override
             public void onCompletion(MediaPlayer mp) {
+                System.out.println("ok");
+                mp.stop();
                 mp.reset();
-                final ArrayList<File> pla = pl;
-                Iterator<File> iter = pla.iterator();
-                FileInputStream fis = null;
+                FileInputStream fis;
                 try {
-                    fis = new FileInputStream(iter.next());
+                    fis = new FileInputStream(pl.get(0));
                     mp.setDataSource(fis.getFD());
+                    mp.prepareAsync();
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
 
-                System.out.println(iter.hasNext());
-                mp.prepareAsync();
             }
         });
 
@@ -104,21 +97,22 @@ public class ListenSongActivity extends AppCompatActivity {
                 FileOutputStream fos = new FileOutputStream(tempMp3, true);
                 chunk = (MusicFile) input.readObject();
                 int i = 0;
-                while (chunk.getId() != 0 && i < 400) {
+                while (chunk.getId() != 0 && i < 1000) {
                     fos.write(chunk.getMusicFileExtract());
                     chunk = (MusicFile) input.readObject();
+                    pl.add(tempMp3);
                     i++;
-                }
-                pl.add(tempMp3);
-                play();
-                System.out.println("continUEEEEE");
-                while (chunk.getId() != 0 && i < 800) {
-                    fos.write(chunk.getMusicFileExtract());
-                    chunk = (MusicFile) input.readObject();
-                    i++;
-                }
-                pl.add(tempMp3);
 
+                }
+                play();
+                fos = new FileOutputStream(tempMp3);
+                while (chunk.getId() != 0) {
+                    fos.write(chunk.getMusicFileExtract());
+                    chunk = (MusicFile) input.readObject();
+                    pl.add(tempMp3);
+                    System.out.println(i);
+                    i++;
+                }
                 fos.close();
 
             } catch (Exception e) {
