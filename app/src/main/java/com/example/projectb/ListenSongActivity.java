@@ -3,18 +3,24 @@ package com.example.projectb;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
+import android.content.ContextWrapper;
 import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.net.Socket;
+import java.sql.SQLOutput;
 import java.util.ArrayList;
 
 public class ListenSongActivity extends AppCompatActivity {
@@ -22,68 +28,90 @@ public class ListenSongActivity extends AppCompatActivity {
     private static ChooseSongActivity csa = new ChooseSongActivity();
     ObjectInputStream input;
     ObjectOutputStream output;
+
+    public void play(File a) throws IOException {
+
+        final MediaPlayer mPlayer = new MediaPlayer();
+        final File finalTempMp = a;
+        mPlayer.prepareAsync();
+        mPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+
+            @Override
+            public void onPrepared(MediaPlayer mp) {
+                System.out.println("PEZI");
+                FileInputStream fis = null;
+                try {
+                    fis = new FileInputStream(finalTempMp);
+
+                    mPlayer.setDataSource(fis.getFD());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                mPlayer.start();
+
+            }
+        });
+
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        File file = new File("a");
-        file.mkdir();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_listen_song);
         MediaPlayer mPlayer = MediaPlayer.create(ListenSongActivity.this, R.raw.aaa);
         String chosenSong = getIntent().getStringExtra("songname");
-        System.out.println("Chosen song: " +chosenSong);
+        System.out.println("Chosen song: " + chosenSong);
         ListenSongAsyncTask listenSongAsyncTask = new ListenSongAsyncTask();
         listenSongAsyncTask.execute(chosenSong);
-        //mPlayer.start();
+
     }
 
 
+    public class ListenSongAsyncTask extends AsyncTask<String, String, File> {
 
-
-
-    public class ListenSongAsyncTask extends AsyncTask<String, String, String> {
-
+        MusicFile chunk = null;
 
         @Override
-        public String doInBackground(String... song) {
+        public File doInBackground(String... song) {
             input = csa.getInput();
             output = csa.getOutput();
+            File tempMp3 = null;
             try {
                 output.writeObject(song[0]);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            try {
-                MusicFile chunk = (MusicFile) input.readObject();
-                OutputStream outStream;
-                ByteArrayOutputStream byteOutStream;
-                outStream = new FileOutputStream( "a\\" + song[0] + ".mp3", true);
-                byteOutStream = new ByteArrayOutputStream();
-                if (chunk.getSong().getTrackName().equals("")) {
-                    System.out.println((String) input.readObject());
-                } else {
-                    while (chunk.getId() != 0) {
-                        byteOutStream.write(chunk.getMusicFileExtract());
-                        chunk = (MusicFile) input.readObject();
-                    }
-                    byteOutStream.writeTo(outStream);
-                    System.out.println("Song " + song[0] + " downloaded.");
+                tempMp3 = File.createTempFile("kurchina", "mp3", getCacheDir());
+                tempMp3.deleteOnExit();
+                FileOutputStream fos = new FileOutputStream(tempMp3, true);
+                chunk = (MusicFile) input.readObject();
+                int i = 0;
+                while (chunk.getId() != 0) {
+                    fos.write(chunk.getMusicFileExtract());
+                    chunk = (MusicFile) input.readObject();
+                    i++;
                 }
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
+                System.out.println(i);
+                fos.close();
+
+            } catch (IOException | ClassNotFoundException e) {
                 e.printStackTrace();
             }
 
 
-            return "A";
+            return tempMp3;
         }
 
 
-        protected void onPostExecute(ArrayList<Song> allSongs) {
+        protected void onPostExecute(File tempMp3) {
+
+            super.onPostExecute(tempMp3);
+            System.out.println("post");
+            try {
+                play(tempMp3);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
 
         }
     }
-
 
 }
