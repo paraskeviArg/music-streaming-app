@@ -19,43 +19,49 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
+import java.util.List;
+
 
 public class ListenSongActivity extends AppCompatActivity {
 
     private static ChooseSongActivity csa = new ChooseSongActivity();
     ObjectInputStream input;
     ObjectOutputStream output;
-    private static ArrayList<File> pl = new ArrayList();
+    final List<File> pl = Collections.synchronizedList(new ArrayList<File>());
+    static File tsank;
 
     public void play() throws Exception {
 
         final MediaPlayer mPlayer = new MediaPlayer();
 
-        FileInputStream fis = new FileInputStream(pl.get(0));
+        FileInputStream fis = new FileInputStream(tsank);
         mPlayer.setDataSource(fis.getFD());
+        fis.close();
+
         mPlayer.prepareAsync();
 
         mPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
             @Override
             public void onPrepared(MediaPlayer mp) {
                 mp.start();
-                pl.remove(pl.get((0)));
-                System.out.println("AAAAAAAAAAAAAAAA" + pl.size());
+
             }
         });
 
         mPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             @Override
             public void onCompletion(MediaPlayer mp) {
-                System.out.println("ok");
-                mp.stop();
-                mp.reset();
+
                 FileInputStream fis;
                 try {
-                    fis = new FileInputStream(pl.get(0));
+                    mp.reset();
+                    fis = new FileInputStream(tsank);
                     mp.setDataSource(fis.getFD());
+                    fis.close();
                     mp.prepareAsync();
+
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
                 } catch (IOException e) {
@@ -97,23 +103,14 @@ public class ListenSongActivity extends AppCompatActivity {
                 FileOutputStream fos = new FileOutputStream(tempMp3, true);
                 chunk = (MusicFile) input.readObject();
                 int i = 0;
-                while (chunk.getId() != 0 && i < 1000) {
-                    fos.write(chunk.getMusicFileExtract());
-                    chunk = (MusicFile) input.readObject();
-                    pl.add(tempMp3);
-                    i++;
-
-                }
-                play();
-                fos = new FileOutputStream(tempMp3);
                 while (chunk.getId() != 0) {
                     fos.write(chunk.getMusicFileExtract());
                     chunk = (MusicFile) input.readObject();
-                    pl.add(tempMp3);
-                    System.out.println(i);
+                    tsank = tempMp3;
+                    play();
                     i++;
                 }
-                fos.close();
+
 
             } catch (Exception e) {
                 e.printStackTrace();
