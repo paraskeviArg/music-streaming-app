@@ -33,21 +33,14 @@ public class ListenSongActivity extends AppCompatActivity {
 
         final MediaPlayer mPlayer = new MediaPlayer();
         final File finalTempMp = a;
+        FileInputStream fis = new FileInputStream(finalTempMp);
+
+        mPlayer.setDataSource(fis.getFD());
         mPlayer.prepareAsync();
         mPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
 
             @Override
             public void onPrepared(MediaPlayer mp) {
-                System.out.println("PEZI");
-                FileInputStream fis = null;
-                try {
-                    fis = new FileInputStream(finalTempMp);
-
-                    mPlayer.setDataSource(fis.getFD());
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
                 mPlayer.start();
 
             }
