@@ -3,6 +3,7 @@ package com.example.projectb;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.media.MediaPlayer;
@@ -34,11 +35,9 @@ public class ListenSongActivity extends AppCompatActivity {
         final MediaPlayer mPlayer = new MediaPlayer();
         final File finalTempMp = a;
         FileInputStream fis = new FileInputStream(finalTempMp);
-
         mPlayer.setDataSource(fis.getFD());
         mPlayer.prepareAsync();
         mPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-
             @Override
             public void onPrepared(MediaPlayer mp) {
                 mPlayer.start();
@@ -64,6 +63,11 @@ public class ListenSongActivity extends AppCompatActivity {
     public class ListenSongAsyncTask extends AsyncTask<String, String, File> {
 
         MusicFile chunk = null;
+        private ProgressDialog dialog = new ProgressDialog(ListenSongActivity.this);
+        protected void onPreExecute() {
+            this.dialog.setMessage("Please wait");
+            this.dialog.show();
+        }
 
         @Override
         public File doInBackground(String... song) {
@@ -89,15 +93,16 @@ public class ListenSongActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
 
-
             return tempMp3;
         }
 
 
         protected void onPostExecute(File tempMp3) {
-
             super.onPostExecute(tempMp3);
-            System.out.println("post");
+            if (dialog.isShowing()) {
+                dialog.dismiss();
+            }
+
             try {
                 play(tempMp3);
             } catch (IOException e) {
