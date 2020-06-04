@@ -46,6 +46,7 @@ public class ListenSongActivity extends AppCompatActivity {
             @Override
             public void onPrepared(MediaPlayer mp) {
                 System.out.println(pl.size());
+                System.out.println("d");
                 mPlayer.start();
             }
         });
@@ -53,25 +54,21 @@ public class ListenSongActivity extends AppCompatActivity {
         mPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             @Override
             public void onCompletion(MediaPlayer mp) {
-                System.out.println(pl.size());
-                MediaPlayer mPlayer = new MediaPlayer();
+                mp.reset();
                 final ArrayList<File> pla = pl;
                 Iterator<File> iter = pla.iterator();
-
                 FileInputStream fis = null;
                 try {
                     fis = new FileInputStream(iter.next());
+                    mp.setDataSource(fis.getFD());
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
-                }
-                try {
-                    mPlayer.setDataSource(fis.getFD());
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                System.out.println(iter.hasNext());
-                mPlayer.prepareAsync();
 
+                System.out.println(iter.hasNext());
+                mp.prepareAsync();
             }
         });
 
