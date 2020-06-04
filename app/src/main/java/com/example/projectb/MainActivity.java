@@ -88,8 +88,8 @@ public class MainActivity extends AppCompatActivity {
                 Consumer consumer = new Consumer();
                 Socket connection = new Socket("10.0.2.2", 9600);
                 System.out.println("Connected.");
-                ObjectInputStream input = new ObjectInputStream(connection.getInputStream());
-                ObjectOutputStream output = new ObjectOutputStream(connection.getOutputStream());
+                input = new ObjectInputStream(connection.getInputStream());
+                output = new ObjectOutputStream(connection.getOutputStream());
                 String sessionQ = (String) input.readObject();
                 System.out.println(sessionQ);
                 output.writeObject("offline");

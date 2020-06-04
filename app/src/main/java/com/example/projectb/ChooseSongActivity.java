@@ -30,23 +30,23 @@ public class ChooseSongActivity extends Activity {
     private static MainActivity ma = new MainActivity();
     private static SearchArtistActivity saa = new SearchArtistActivity();
     RelativeLayout constraint = null;
-
+    private static ObjectInputStream input;
+    private static ObjectOutputStream output;
 
     public void createList(final Song[] songs) {
         SongList listAdapter = new SongList(ChooseSongActivity.this, songs);
         list = findViewById(R.id.list);
         list.setAdapter(listAdapter);
+
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
-                Toast.makeText(ChooseSongActivity.this, "You chose artist: " + songs[+position], Toast.LENGTH_SHORT).show();
+                Toast.makeText(ChooseSongActivity.this, "You chose song: " + songs[+position], Toast.LENGTH_SHORT).show();
                 song = songs[+position].getTrackName();
-
-                SearchArtistActivity.ChooseArtistAsyncTask chooseArtistAsyncTask = new SearchArtistActivity.ChooseArtistAsyncTask();
-                chooseArtistAsyncTask.execute();
-
-                startActivity(new Intent(ChooseSongActivity.this, ListenSongActivity.class));
+                Intent intent = new Intent(ChooseSongActivity.this, ListenSongActivity.class);
+                intent.putExtra("songname",song);
+                startActivity(intent);
             }
         });
     }
@@ -59,6 +59,7 @@ public class ChooseSongActivity extends Activity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbarSong);
         String title = saa.getArtist();
         toolbar.setTitle("Showing all songs by: " + title);
+
         ViewArtistSongsAsyncTask viewArtistSongsAsyncTask = new ViewArtistSongsAsyncTask();
         viewArtistSongsAsyncTask.execute();
 
@@ -70,22 +71,25 @@ public class ChooseSongActivity extends Activity {
 
         @Override
         public ArrayList<Song> doInBackground(String... strings) {
+            input = ma.getInput();
+            output = ma.getOutput();
 
-            ObjectInputStream input = ma.getInput();
-            ObjectOutputStream output = ma.getOutput();
             try {
                 String newPort = (String) input.readObject();
+                System.out.println();
                 if (newPort.equals("")) {
                     System.out.println("This artist does not exist in our database. Please search for an other artist.");
                 } else {
                     if (!newPort.equals("noRedirect")) {
                         Socket connection = new Socket("10.0.2.2", Integer.parseInt(newPort));
+
                     }
                 }
+
                 ArrayList<Song> artistSongs;
                 allSongs = (ArrayList<Song>) input.readObject();
                 System.out.println(allSongs);
-                System.out.println(input.readObject());
+                System.out.println(input.readObject());    // pick a song:
 
 
             } catch (ClassNotFoundException e) {
@@ -99,7 +103,6 @@ public class ChooseSongActivity extends Activity {
         @Override
         protected void onPostExecute(ArrayList<Song> allSongs) {
             super.onPostExecute(allSongs);
-            System.out.println(allSongs);
             Song[] songsArray = new Song[allSongs.size()];
             int i = 0;
             for (Song song : allSongs) {
@@ -108,5 +111,12 @@ public class ChooseSongActivity extends Activity {
             }
             createList(songsArray);
         }
+    }
+    public ObjectInputStream getInput() {
+        return input;
+    }
+
+    public ObjectOutputStream getOutput() {
+        return output;
     }
 }
