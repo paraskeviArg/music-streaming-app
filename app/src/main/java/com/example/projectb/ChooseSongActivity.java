@@ -32,7 +32,7 @@ public class ChooseSongActivity extends Activity {
     RelativeLayout constraint = null;
     private static ObjectInputStream input;
     private static ObjectOutputStream output;
-
+    String sessionType;
     public void createList(final Song[] songs) {
         SongList listAdapter = new SongList(ChooseSongActivity.this, songs);
         list = findViewById(R.id.list);
@@ -46,6 +46,7 @@ public class ChooseSongActivity extends Activity {
                 song = songs[+position].getTrackName();
                 Intent intent = new Intent(ChooseSongActivity.this, ListenSongActivity.class);
                 intent.putExtra("songname",song);
+                intent.putExtra("sessionType",sessionType);
                 startActivity(intent);
             }
         });
@@ -57,6 +58,8 @@ public class ChooseSongActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_choose_song);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbarSong);
+        sessionType = getIntent().getStringExtra("sessionType");
+        System.out.println(sessionType);
         String title = saa.getArtist();
         toolbar.setTitle("Showing all songs by: " + title);
 

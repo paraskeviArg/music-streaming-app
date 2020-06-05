@@ -43,21 +43,27 @@ public class SearchArtistActivity extends Activity {
 
                 ChooseArtistAsyncTask chooseArtistAsyncTask = new ChooseArtistAsyncTask();
                 chooseArtistAsyncTask.execute();
-                startActivity(new Intent(SearchArtistActivity.this, ChooseSongActivity.class));
+                Intent intent = new Intent(SearchArtistActivity.this, ChooseSongActivity.class);
+                intent.putExtra("sessionType", sessionType);
+                startActivity(intent);
             }
         });
     }
 
-
+    String sessionType;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_artist);
+        sessionType = getIntent().getStringExtra("sessionType");
         SearchActivityAsync searchActivityAsync = new SearchActivityAsync();
         searchActivityAsync.execute();
         Button button = null;
         constraint = findViewById(R.id.relativeArtist);
 
+    }
+    public String getSessionType(){
+        return sessionType;
     }
 
     public String getArtist() {
@@ -68,23 +74,14 @@ public class SearchArtistActivity extends Activity {
         return allArtists;
     }
 
+
     @SuppressLint("StaticFieldLeak")
     public class SearchActivityAsync extends AsyncTask<String, String, ArrayList<String>> {
         String current = "";
         ProgressDialog p;
-/*
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            p = new ProgressDialog(SearchArtistActivity.this);
-            p.setMessage("Showing all artists...");
-            p.setIndeterminate(false);
-            p.setCancelable(false);
-            p.show();
 
-        }
 
- */
+
 
         @Override
         public ArrayList<String> doInBackground(String... strings) {

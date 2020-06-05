@@ -30,7 +30,9 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 MainActivityAsyncOnline myAsyncTasks = new MainActivityAsyncOnline();
                 myAsyncTasks.execute();
-                startActivity(new Intent(MainActivity.this, SearchArtistActivity.class));
+                Intent intent = new Intent(MainActivity.this, SearchArtistActivity.class);
+                intent.putExtra("sessionType","online");
+                startActivity(intent);
             }
         });
         btn_offline.setOnClickListener(new View.OnClickListener() {
@@ -38,7 +40,9 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 MainActivityAsyncOffline myAsyncTasks = new MainActivityAsyncOffline();
                 myAsyncTasks.execute();
-                startActivity(new Intent(MainActivity.this, SearchArtistActivity.class));
+                Intent intent = new Intent(MainActivity.this, SearchArtistActivity.class);
+                intent.putExtra("sessionType","offline");
+                startActivity(intent);
             }
         });
 

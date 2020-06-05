@@ -9,6 +9,7 @@ import android.app.ProgressDialog;
 import android.media.MediaPlayer;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -25,14 +26,15 @@ import java.util.List;
 
 
 public class ListenSongActivity extends AppCompatActivity {
-
+    private static SearchArtistActivity saa = new SearchArtistActivity();
     private static ChooseSongActivity csa = new ChooseSongActivity();
     ObjectInputStream input;
     ObjectOutputStream output;
     final List<File> pl = Collections.synchronizedList(new ArrayList<File>());
     static File tsank;
+    String sessionType;
 
-    public void play() throws Exception {
+    public void play() throws IOException {
 
         final MediaPlayer mPlayer = new MediaPlayer();
 
@@ -61,7 +63,7 @@ public class ListenSongActivity extends AppCompatActivity {
                     mp.setDataSource(fis.getFD());
                     fis.close();
                     mp.prepareAsync();
-
+                    mp.release();
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
                 } catch (IOException e) {
@@ -78,7 +80,10 @@ public class ListenSongActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_listen_song);
         String chosenSong = getIntent().getStringExtra("songname");
+        sessionType = getIntent().getStringExtra("sessionType");
         System.out.println("Chosen song: " + chosenSong);
+        System.out.println(sessionType);
+
         ListenSongAsyncTask listenSongAsyncTask = new ListenSongAsyncTask();
         listenSongAsyncTask.execute(chosenSong);
 
@@ -102,15 +107,35 @@ public class ListenSongActivity extends AppCompatActivity {
                 tempMp3.deleteOnExit();
                 FileOutputStream fos = new FileOutputStream(tempMp3, true);
                 chunk = (MusicFile) input.readObject();
-                int i = 0;
-                while (chunk.getId() != 0) {
+
+
+                if (sessionType.equals("online")) {
                     fos.write(chunk.getMusicFileExtract());
-                    chunk = (MusicFile) input.readObject();
                     tsank = tempMp3;
                     play();
-                    i++;
-                }
+                    int count = 1;
+                    while (chunk.getId() != 0) {
+                        chunk = (MusicFile) input.readObject();
+                        fos.write(chunk.getMusicFileExtract());
 
+                        if (count % 100 == 0) {
+                            tsank = tempMp3;
+                            play();
+                            fos.close();
+                            fos = new FileOutputStream(tempMp3, true);
+                        }
+                        count++;
+
+                    }
+                } else if (sessionType.equals("offline")) {
+                    fos.write(chunk.getMusicFileExtract());
+                     do{
+                        chunk = (MusicFile) input.readObject();
+                        fos.write(chunk.getMusicFileExtract());
+                        tsank = tempMp3;
+                    }while (chunk.getId() != 0);
+                    play();
+                }
 
             } catch (Exception e) {
                 e.printStackTrace();
