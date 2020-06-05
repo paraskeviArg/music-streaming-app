@@ -2,21 +2,20 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/holo_blue_light"
-    >
+    android:background="#2196F3">
 
     <Button
         android:id="@+id/btn_online"
         android:layout_width="wrap_content"
-        android:background="@android:color/holo_green_light"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="414dp"
+        android:background="@android:color/background_light"
         android:text="Online" />
+
     <Button
         android:id="@+id/btn_offline"
-        android:background="@android:color/holo_orange_light"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
@@ -24,7 +23,9 @@
         android:layout_marginEnd="155dp"
         android:layout_marginRight="155dp"
         android:layout_marginBottom="349dp"
-        android:text="Offline" />
+        android:background="#000000"
+        android:text="Offline"
+        android:textColor="#FFFFFF" />
 
 
     <androidx.constraintlayout.widget.Guideline
@@ -41,6 +42,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="556dp"
         android:text="Spotifai"
+        android:textColor="#FFFFFF"
         android:textSize="36sp" />
 
 </RelativeLayout>

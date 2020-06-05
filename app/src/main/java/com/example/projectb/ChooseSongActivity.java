@@ -42,7 +42,6 @@ public class ChooseSongActivity extends Activity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
-                Toast.makeText(ChooseSongActivity.this, "You chose song: " + songs[+position], Toast.LENGTH_SHORT).show();
                 song = songs[+position].getTrackName();
                 Intent intent = new Intent(ChooseSongActivity.this, ListenSongActivity.class);
                 intent.putExtra("songname",song);

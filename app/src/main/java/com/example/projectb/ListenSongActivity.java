@@ -6,10 +6,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.app.ProgressDialog;
 
 
+import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.view.View;
+import android.widget.ImageButton;
+import android.widget.TextView;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -33,10 +37,12 @@ public class ListenSongActivity extends AppCompatActivity {
     final List<File> pl = Collections.synchronizedList(new ArrayList<File>());
     static File tsank;
     String sessionType;
+    MediaPlayer mPlayer=null;
+
 
     public void play() throws IOException {
 
-        final MediaPlayer mPlayer = new MediaPlayer();
+         mPlayer = new MediaPlayer();
 
         FileInputStream fis = new FileInputStream(tsank);
         mPlayer.setDataSource(fis.getFD());
@@ -83,7 +89,28 @@ public class ListenSongActivity extends AppCompatActivity {
         sessionType = getIntent().getStringExtra("sessionType");
         System.out.println("Chosen song: " + chosenSong);
         System.out.println(sessionType);
+        TextView songPlaying = findViewById(R.id.songPlaying);
+        ImageButton playButton = findViewById(R.id.playButton);
+        ImageButton pauseButton = findViewById(R.id.pauseButton);
 
+        playButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(!mPlayer.isPlaying()) {
+                    mPlayer.start();
+                }
+            }
+        });
+        pauseButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(mPlayer.isPlaying()) {
+                    mPlayer.pause();
+                }
+            }
+        });
+
+        songPlaying.setText(chosenSong);
         ListenSongAsyncTask listenSongAsyncTask = new ListenSongAsyncTask();
         listenSongAsyncTask.execute(chosenSong);
 
@@ -107,17 +134,15 @@ public class ListenSongActivity extends AppCompatActivity {
                 tempMp3.deleteOnExit();
                 FileOutputStream fos = new FileOutputStream(tempMp3, true);
                 chunk = (MusicFile) input.readObject();
-
-
+                fos.write(chunk.getMusicFileExtract());
                 if (sessionType.equals("online")) {
-                    fos.write(chunk.getMusicFileExtract());
+                    System.out.println("online");
                     tsank = tempMp3;
                     play();
                     int count = 1;
                     while (chunk.getId() != 0) {
                         chunk = (MusicFile) input.readObject();
                         fos.write(chunk.getMusicFileExtract());
-
                         if (count % 100 == 0) {
                             tsank = tempMp3;
                             play();
@@ -125,15 +150,14 @@ public class ListenSongActivity extends AppCompatActivity {
                             fos = new FileOutputStream(tempMp3, true);
                         }
                         count++;
-
                     }
                 } else if (sessionType.equals("offline")) {
-                    fos.write(chunk.getMusicFileExtract());
-                     do{
+                    System.out.println("offline");
+                    while (chunk.getId() != 0) {
                         chunk = (MusicFile) input.readObject();
-                        fos.write(chunk.getMusicFileExtract());
-                        tsank = tempMp3;
-                    }while (chunk.getId() != 0);
+                        if (chunk.getId() != 0) fos.write(chunk.getMusicFileExtract());
+                    }
+                    tsank = tempMp3;
                     play();
                 }
 
