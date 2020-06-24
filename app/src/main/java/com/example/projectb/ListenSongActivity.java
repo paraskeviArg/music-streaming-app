@@ -12,6 +12,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
@@ -92,6 +93,18 @@ public class ListenSongActivity extends AppCompatActivity {
         TextView songPlaying = findViewById(R.id.songPlaying);
         ImageButton playButton = findViewById(R.id.playButton);
         ImageButton pauseButton = findViewById(R.id.pauseButton);
+        Button backButton = findViewById(R.id.backButton);
+
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ListenSongActivity.this, MainActivity.class);
+                if(mPlayer.isPlaying()) {
+                    mPlayer.stop();
+                }
+                startActivity(intent);
+            }
+        });
 
         playButton.setOnClickListener(new View.OnClickListener() {
             @Override
