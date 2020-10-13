@@ -1,4 +1,4 @@
-# ProjectB
+# Music Streaming Application
 
   A university project completed in a team of two. It has been the hardest project I have completed personally because of the many new aspects of programming that I had to 
 teach myself starting from 0. It is a project which was aiming to introduce us into Distributed Systems. 
